@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <title>Document</title>
+</head>
+<body>
+    <div class="header">
+        <h1>Delete Form</h1>
+      </div>
+  <div class="container">
+      <br>
+      <h1>Delete Category</h1>
+      <select id="categories" class="form-control"> </select>
+      <button id="del_cat" style="margin-top: 10px; width
+      :100%" class="btn btn-danger">Delete Category</button>
+      <br><hr>
+      <h1>Delete Test</h1>
+      <select id="tests" class="form-control"> </select>
+      <button id="del_test" style="margin-top: 10px; width
+      :100%" class="btn btn-danger">Delete Test</button>
+      <br><br>
+  </div>
+  <script>
+    const categories = document.getElementById('categories');
+    const tests = document.getElementById('tests');
+    fetch('http://simpleosbackend.herokuapp.com/categories')
+    .then(res => res.json())
+    .then(data => {
+      let html = '';
+      data.forEach(data => {
+        html += `
+        <option value="${data._id}">
+          ${data.name}
+        </option>`
+      });
+      categories.innerHTML = html;
+    })
+    .catch(() => alert('Can\'t get categories from server!'));
+
+    fetch('http://simpleosbackend.herokuapp.com/tests')
+    .then(res => res.json())
+    .then(data => {
+      let html = '';
+      data.forEach(data => {
+        html += `
+        <option value="${data._id}">
+          ${data.title}
+        </option>`
+      });
+      tests.innerHTML = html;
+    })
+    .catch(() => alert('Can\'t get categories from server!'));
+
+    document.getElementById('del_cat').addEventListener('click', () => {
+      if(confirm('Are you sure?')) {
+        fetch(`https://simpleosbackend.herokuapp.com/deleteCategory/${categories.options[categories.selectedIndex].value}`, {
+          method: "POST"
+        }).then(res => alert('Category Deleted'));
+      }
+    })
+
+    document.getElementById('del_test').addEventListener('click', () => {
+      if(confirm('Are you sure?')) {
+        fetch(`https://simpleosbackend.herokuapp.com/deleteTest/${tests.options[tests.selectedIndex].value}`, {
+          method: "POST"
+        }).then(res => alert('Test Deleted'));
+      }
+    })
+  </script>
+</body>
+</html>
